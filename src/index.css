@@ -509,59 +509,100 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 /* =========================================================================
    VISUALIZER
    ========================================================================= */
+/* Figma: row — copy left (flex 1 1 0), 748 × 600 visual right, gap 80 */
 .visualizer {
   background: var(--bg-ruby-black);
   padding: 120px var(--gutter);
   display: flex;
+  justify-content: flex-start;
   align-items: center;
   gap: 80px;
 }
-.visualizer .col { flex: 1 1 0; display: flex; flex-direction: column; gap: 42px; }
+.visualizer .col { flex: 1 1 0; display: flex; flex-direction: column; align-items: flex-start; gap: 42px; }
 .visualizer .lead { display: flex; flex-direction: column; gap: 20px; }
 .visualizer h2 { font-family: var(--font-display); font-size: clamp(38px, 4.2vw, 54px); font-weight: 400; line-height: 1.04; color: #fff; }
 .visualizer h2 .tan { color: var(--accent-tan); }
 .visualizer p { color: #fff; font-size: 16px; line-height: 1.55; letter-spacing: .8px; max-width: 520px; }
 .visualizer .steps { font-family: var(--font-body); font-size: 11px; font-weight: 500; letter-spacing: 2px; color: #fff; }
 .btn-ruby-lg.rounded { border-radius: 2px; padding: 17px 26px 17px 30px; }
+/* Figma: 748 × 600 frame. Both layers hold the same image at the same offset
+   (Figma places them at -110 / -118 relative to the frame), so only a clip-path
+   mask moves while dragging — nothing is ever resized or zoomed. */
 .ba {
-  flex: 0 0 748px;
-  max-width: 50%;
-  height: 600px;
+  --pos: 50%;
   position: relative;
+  flex: 0 1 748px;
+  aspect-ratio: 748 / 600;
   overflow: hidden;
-  border-radius: 2px;
-  user-select: none;
+  background: var(--ink-muted);
+  user-select: none; -webkit-user-select: none;
+  touch-action: pan-y;
 }
-.ba .img { position: absolute; inset: 0; background-position: center; background-size: cover; }
-.ba .before { background-image: url('/img/tex-02.jpg'); filter: grayscale(.4) brightness(.8); }
-.ba .after { background-image: url('/img/quartz.jpg'); clip-path: inset(0 0 0 50%); }
-.ba .divider { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: #fff; transform: translateX(-1px); }
-.ba .handle {
-  position: absolute; top: 50%; left: 50%;
-  width: 44px; height: 44px; border-radius: 9999px; background: #fff;
-  transform: translate(-50%, -50%);
+.ba .ba-layer { position: absolute; inset: 0; }
+.ba .ba-before { clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+.ba .ba-img {
+  display: block; width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: 36% center;   /* matches the Figma crop (img left ≈ -114 of 1060) */
+  -webkit-user-drag: none;
+  transition: filter .45s ease;
+}
+
+.ba .ba-handle {
+  position: absolute; top: 0; bottom: 0; left: var(--pos);
+  width: 46px; transform: translateX(-50%); z-index: 5;
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-size: 13px; font-weight: 500; color: var(--ink-primary);
-  box-shadow: 0 4px 14px rgba(0,0,0,.35);
+  cursor: ew-resize; touch-action: none;
 }
+.ba .ba-line {
+  position: absolute; top: 0; bottom: 0; left: 50%; width: 2px;
+  transform: translateX(-50%); background: #fff;
+  box-shadow: 0 0 0 1px rgba(20, 16, 14, .12);
+}
+.ba .ba-grip {
+  position: relative; z-index: 1;
+  width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: #fff; color: var(--ink-primary);
+  font-family: var(--font-display); font-size: 13px; font-weight: 500;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .35);
+  transition: transform .18s ease;
+}
+.ba .ba-handle:hover .ba-grip { transform: scale(1.06); }
+.ba .ba-handle:focus-visible { outline: none; }
+.ba .ba-handle:focus-visible .ba-grip { outline: 2px solid var(--brand-ruby); outline-offset: 3px; }
+
+/* Figma: BEFORE at x300 / AFTER at x392 with the divider at 374 — i.e. flanking it */
+.ba .ba-tag {
+  position: absolute; top: 34px; z-index: 4;
+  font-family: var(--font-display); font-size: 10px; font-weight: 500; letter-spacing: 1.5px;
+  color: var(--ink-inverse); text-shadow: 0 1px 6px rgba(0, 0, 0, .5);
+  pointer-events: none; white-space: nowrap;
+}
+.ba .ba-tag.b { right: calc(100% - var(--pos) + 14px); }
+.ba .ba-tag.a { left: calc(var(--pos) + 18px); }
 .ba .chip {
-  position: absolute; left: 24px; top: 24px;
+  position: absolute; left: 24px; top: 24px; z-index: 3;
   background: #fff; border-radius: 100px; padding: 8px 14px;
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-display); font-size: 10px; font-weight: 500; letter-spacing: 1.5px; color: var(--brand-ruby);
 }
 .ba .chip i { width: 6px; height: 6px; border-radius: 9999px; background: var(--brand-ruby); }
-.ba .ba-label { position: absolute; top: 34px; font-family: var(--font-display); font-size: 10px; font-weight: 500; letter-spacing: 1.5px; color: #fff; }
-.ba .ba-label.b { left: 40%; } .ba .ba-label.a { right: 40%; }
 .ba .swatches {
-  position: absolute; left: 15px; bottom: 15px;
+  position: absolute; left: 15px; bottom: 15px; z-index: 6;
   background: var(--bg-off-white); border-radius: 6px; padding: 14px 16px;
   display: flex; flex-direction: column; gap: 6px;
 }
-.ba .swatches .r { display: flex; align-items: center; gap: 10px; }
-.ba .swatches .s { width: 30px; height: 30px; border-radius: 3px; }
-.ba .swatches .s.sel { width: 34px; height: 34px; border: 2px solid var(--brand-ruby); }
-.ba .swatches .cap { font-family: var(--font-display); font-size: 11px; font-weight: 500; color: var(--ink-primary); }
+/* Figma: unselected 30 × 30, selected 34 × 34 with a 2px ruby border */
+.ba .swatches .r { display: flex; align-items: center; gap: 10px; min-height: 34px; }
+.ba .swatches .s {
+  width: 30px; height: 30px; border-radius: 3px;
+  border: 2px solid transparent; padding: 0; cursor: pointer;
+  transition: width .18s ease, height .18s ease, border-color .18s ease;
+}
+.ba .swatches .s.sel { width: 34px; height: 34px; border-color: var(--brand-ruby); }
+.ba .swatches .s:focus-visible { outline: 2px solid var(--brand-ruby); outline-offset: 2px; }
+.ba .swatches .cap { font-family: var(--font-display); font-size: 11px; font-weight: 500; color: var(--ink-primary); min-height: 14px; }
 
 /* =========================================================================
    WHY KALINGA (stats)
@@ -742,14 +783,19 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 @media (max-width: 860px) {
   .topbar nav { display: none; }
   .nav-toggle { display: inline-flex; }
-  .collections, .visualizer, .centres, .start { flex-direction: column; }
+  .collections, .visualizer, .centres, .start { flex-direction: column; align-items: stretch; }
   .collections .visual, .centres .visual, .start .visual { flex-basis: auto; max-width: 100%; width: 100%; min-height: 60vh; }
-  .visualizer .ba { flex-basis: auto; max-width: 100%; width: 100%; }
+  .visualizer .ba { flex-basis: auto; width: 100%; }
   .cards-3, .trade .cards, .quotes { grid-template-columns: 1fr; }
   .footer .grid { grid-template-columns: 1fr; }
   .start .col { padding: 100px 0; }
   .space-card { width: 78vw; height: 460px; }
   .hero-copy .sub { font-size: 15px; }
+}
+@media (max-width: 640px) {
+  /* taller crop so the room still reads on a narrow screen */
+  .ba { aspect-ratio: 4 / 5; }
+  .ba .ba-grip { width: 40px; height: 40px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }

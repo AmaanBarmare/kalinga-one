@@ -222,38 +222,47 @@ function BrowseBySpace() {
 }
 
 /* ------------------------------------------------------------- VISUALIZER */
-function Visualizer() {
-  const baRef = useRef(null)
-  const afterRef = useRef(null)
-  const divRef = useRef(null)
-  const handleRef = useRef(null)
-  const dragging = useRef(false)
+const VIS_MATERIALS = [
+  { name: 'Calacatta Oro · Polished', swatch: '#d7d1c8', filter: 'none' },
+  { name: 'Bianco Terrazzo · Honed', swatch: '#b8afa8', filter: 'saturate(.78) brightness(.97)' },
+  { name: 'Grigio Stone · Leathered', swatch: '#8a7f77', filter: 'saturate(.6) brightness(.82) contrast(1.06)' },
+  { name: 'Nero Marquina · Polished', swatch: '#5e544e', filter: 'saturate(.5) brightness(.52) contrast(1.14)' },
+]
 
-  const setPos = (clientX) => {
-    const box = baRef.current
-    if (!box) return
-    const rect = box.getBoundingClientRect()
-    let p = (clientX - rect.left) / rect.width
-    p = Math.max(0.04, Math.min(0.96, p))
-    const pct = p * 100
-    afterRef.current.style.clipPath = `inset(0 0 0 ${pct}%)`
-    divRef.current.style.left = `${pct}%`
-    handleRef.current.style.left = `${pct}%`
+function Visualizer() {
+  const wrapRef = useRef(null)
+  const draggingRef = useRef(false)
+  const [pos, setPos] = useState(50)   // divider position, %
+  const [mat, setMat] = useState(0)    // selected material
+
+  const setFromClientX = (clientX) => {
+    const el = wrapRef.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    if (r.width === 0) return
+    const p = ((clientX - r.left) / r.width) * 100
+    setPos(Math.min(100, Math.max(0, p)))
   }
-  useEffect(() => {
-    const move = (e) => { if (dragging.current) setPos(e.clientX ?? e.touches?.[0]?.clientX) }
-    const up = () => { dragging.current = false }
-    window.addEventListener('mousemove', move)
-    window.addEventListener('mouseup', up)
-    window.addEventListener('touchmove', move, { passive: true })
-    window.addEventListener('touchend', up)
-    return () => {
-      window.removeEventListener('mousemove', move)
-      window.removeEventListener('mouseup', up)
-      window.removeEventListener('touchmove', move)
-      window.removeEventListener('touchend', up)
-    }
-  }, [])
+
+  // drag begins on the handle only, so clicks elsewhere never jump the divider
+  const onPointerDown = (e) => {
+    draggingRef.current = true
+    e.currentTarget.setPointerCapture?.(e.pointerId)
+  }
+  const onPointerMove = (e) => { if (draggingRef.current) setFromClientX(e.clientX) }
+  const stopDrag = (e) => {
+    if (!draggingRef.current) return
+    draggingRef.current = false
+    e.currentTarget.releasePointerCapture?.(e.pointerId)
+  }
+
+  const onKeyDown = (e) => {
+    const step = e.shiftKey ? 10 : 2
+    if (e.key === 'ArrowLeft') { setPos((p) => Math.max(0, p - step)); e.preventDefault() }
+    else if (e.key === 'ArrowRight') { setPos((p) => Math.min(100, p + step)); e.preventDefault() }
+    else if (e.key === 'Home') { setPos(0); e.preventDefault() }
+    else if (e.key === 'End') { setPos(100); e.preventDefault() }
+  }
 
   return (
     <section className="visualizer">
@@ -270,25 +279,72 @@ function Visualizer() {
         <a className="btn-ruby-lg rounded" href="#">Visualize Your Space <span className="arrow">→</span></a>
       </div>
 
-      <div className="ba" ref={baRef}
-        onMouseDown={(e) => { dragging.current = true }}
-        onTouchStart={() => { dragging.current = true }}
+      <div
+        className="ba"
+        ref={wrapRef}
+        style={{ '--pos': `${pos}%` }}
+        onPointerMove={onPointerMove}
+        onPointerUp={stopDrag}
+        onPointerLeave={stopDrag}
+        onPointerCancel={stopDrag}
       >
-        <div className="img before" />
-        <div className="img after" ref={afterRef} />
-        <div className="ba-label b">BEFORE</div>
-        <div className="ba-label a">AFTER</div>
-        <div className="divider" ref={divRef} />
-        <div className="handle" ref={handleRef}>‹ ›</div>
+        {/* base layer — the Kalinga surface (right of the divider) */}
+        <div className="ba-layer">
+          <img
+            className="ba-img"
+            src="/img/visualizer-after.jpg"
+            alt={`Living room with ${VIS_MATERIALS[mat].name}`}
+            style={{ filter: VIS_MATERIALS[mat].filter }}
+            draggable="false"
+          />
+        </div>
+
+        {/* top layer — the original room, masked to the left of the divider */}
+        <div className="ba-layer ba-before">
+          <img
+            className="ba-img"
+            src="/img/visualizer-before.jpg"
+            alt="Living room before"
+            draggable="false"
+          />
+        </div>
+
+        <span className="ba-tag b">BEFORE</span>
+        <span className="ba-tag a">AFTER</span>
         <div className="chip"><i />LIVING ROOM</div>
+
+        <div
+          className="ba-handle"
+          role="slider"
+          tabIndex={0}
+          aria-label="Drag to compare before and after"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(pos)}
+          aria-valuetext={`${Math.round(pos)}% before, ${100 - Math.round(pos)}% after`}
+          onPointerDown={onPointerDown}
+          onKeyDown={onKeyDown}
+        >
+          <span className="ba-line" />
+          <span className="ba-grip">‹ ›</span>
+        </div>
+
         <div className="swatches">
           <div className="r">
-            <span className="s sel" style={{ background: 'var(--surface-placeholder-light)' }} />
-            <span className="s" style={{ background: 'var(--ink-subtle)' }} />
-            <span className="s" style={{ background: 'var(--ink-muted)' }} />
-            <span className="s" style={{ background: 'var(--surface-stone-deep)' }} />
+            {VIS_MATERIALS.map((m, i) => (
+              <button
+                key={m.name}
+                type="button"
+                className={`s${i === mat ? ' sel' : ''}`}
+                style={{ background: m.swatch }}
+                onClick={() => setMat(i)}
+                aria-label={m.name}
+                aria-pressed={i === mat}
+                title={m.name}
+              />
+            ))}
           </div>
-          <span className="cap">Calacatta Oro · Polished</span>
+          <span className="cap">{VIS_MATERIALS[mat].name}</span>
         </div>
       </div>
     </section>
