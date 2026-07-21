@@ -128,7 +128,81 @@ const TRENDING = [
   { name: 'Miraggio Gold', tag: '', cat: 'Marble · 3 finishes', img: '/img/trend-miraggio.webp' },
   { name: 'Voila', tag: 'NEW', cat: 'Elixir · 3 finishes', img: '/img/trend-voila.webp' },
 ]
+
+function TrendingImage({ src, name }) {
+  const moveLens = (event) => {
+    const image = event.currentTarget
+    if (event.pointerType !== 'touch') {
+      document.querySelectorAll('.trend-image.is-hovering').forEach((activeImage) => {
+        if (activeImage !== image) activeImage.classList.remove('is-hovering')
+      })
+      image.classList.add('is-hovering')
+    }
+    const bounds = image.getBoundingClientRect()
+    const x = Math.min(bounds.width, Math.max(0, event.clientX - bounds.left))
+    const y = Math.min(bounds.height, Math.max(0, event.clientY - bounds.top))
+
+    image.style.setProperty('--lens-x', `${x}px`)
+    image.style.setProperty('--lens-y', `${y}px`)
+    image.style.setProperty('--lens-bg-x', `${(x / bounds.width) * 100}%`)
+    image.style.setProperty('--lens-bg-y', `${(y / bounds.height) * 100}%`)
+  }
+
+  const showLens = (event) => {
+    if (event.pointerType === 'touch') return
+    event.currentTarget.classList.add('is-hovering')
+    moveLens(event)
+  }
+
+  const hideLens = (event) => {
+    const nextTarget = event.relatedTarget
+    if (nextTarget instanceof Node && event.currentTarget.contains(nextTarget)) return
+    event.currentTarget.classList.remove('is-hovering')
+  }
+
+  return (
+    <div
+      className="thumb trend-image"
+      onPointerEnter={showLens}
+      onPointerMove={moveLens}
+      onPointerOut={hideLens}
+      onPointerLeave={hideLens}
+      onPointerCancel={hideLens}
+      onBlur={hideLens}
+      tabIndex={0}
+      aria-label={`${name} surface — hover to magnify`}
+    >
+      <span className="trend-image-base" style={{ backgroundImage: `url(${src})` }} />
+      <span className="trend-lens" style={{ backgroundImage: `url(${src})` }} aria-hidden="true" />
+    </div>
+  )
+}
+
 function Trending() {
+  useEffect(() => {
+    const clearInactiveLenses = (event) => {
+      if (event.pointerType === 'touch') return
+      const activeImage = event.target instanceof Element
+        ? event.target.closest('.trend-image')
+        : null
+
+      document.querySelectorAll('.trend-image.is-hovering').forEach((image) => {
+        if (image !== activeImage) image.classList.remove('is-hovering')
+      })
+    }
+    const clearAllLenses = () => {
+      document.querySelectorAll('.trend-image.is-hovering')
+        .forEach((image) => image.classList.remove('is-hovering'))
+    }
+
+    window.addEventListener('pointermove', clearInactiveLenses, { passive: true })
+    window.addEventListener('blur', clearAllLenses)
+    return () => {
+      window.removeEventListener('pointermove', clearInactiveLenses)
+      window.removeEventListener('blur', clearAllLenses)
+    }
+  }, [])
+
   return (
     <section className="trending" id="projects">
       <div>
@@ -142,7 +216,7 @@ function Trending() {
         <div className="cards-3">
           {TRENDING.map((c) => (
             <div className="tcard" key={c.name}>
-              <div className="thumb" style={{ backgroundImage: `url(${c.img})` }} />
+              <TrendingImage src={c.img} name={c.name} />
               <div className="meta">
                 <span className="name">{c.name}</span>
                 {c.tag && <span className="tag">{c.tag}</span>}

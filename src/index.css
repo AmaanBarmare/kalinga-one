@@ -465,6 +465,58 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   outline-offset: -1px;
   overflow: hidden;
 }
+.trend-image {
+  --lens-x: 50%;
+  --lens-y: 50%;
+  --lens-bg-x: 50%;
+  --lens-bg-y: 50%;
+  position: relative;
+  cursor: crosshair;
+  isolation: isolate;
+}
+.trend-image-base {
+  position: absolute;
+  inset: -4px;
+  z-index: 0;
+  display: block;
+  background-position: center;
+  background-size: cover;
+  transition: filter .28s ease, transform .28s ease;
+  will-change: filter, transform;
+}
+.trend-lens {
+  position: absolute;
+  z-index: 1;
+  left: var(--lens-x);
+  top: var(--lens-y);
+  width: clamp(118px, 36%, 160px);
+  aspect-ratio: 1;
+  display: block;
+  border: 1px solid rgba(255,255,255,.95);
+  border-radius: 50%;
+  background-position: var(--lens-bg-x) var(--lens-bg-y);
+  background-repeat: no-repeat;
+  background-size: auto 185%;
+  box-shadow: 0 8px 24px rgba(20,16,14,.2), inset 0 0 0 1px rgba(20,16,14,.08);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(.88);
+  transition: opacity .2s ease, transform .22s ease;
+  will-change: left, top, background-position, transform;
+}
+.trend-image:hover .trend-image-base,
+.trend-image.is-hovering .trend-image-base,
+.trend-image:focus-visible .trend-image-base {
+  filter: blur(5px);
+  transform: scale(1.025);
+}
+.trend-image:hover .trend-lens,
+.trend-image.is-hovering .trend-lens,
+.trend-image:focus-visible .trend-lens {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.trend-image:focus-visible { outline: 2px solid var(--accent-tan); outline-offset: 3px; }
 .tcard .meta { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
 .tcard .name { font-family: var(--font-display); font-size: 20px; font-weight: 400; color: var(--ink-primary); }
 .tcard .tag { font-family: var(--font-display); font-size: 10px; font-weight: 500; letter-spacing: 1.5px; color: var(--brand-ruby-bright); }
