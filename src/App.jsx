@@ -3,25 +3,32 @@ import Hero from './Hero.jsx'
 
 /* ---------------------------------------------------------------- TOP BAR */
 function TopBar() {
-  const [scrolled, setScrolled] = useState(false)
+  const [navState, setNavState] = useState('top')
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.6)
+    const onScroll = () => {
+      const hero = document.querySelector('.hero')
+      if (!hero) return
+
+      const heroStart = hero.offsetTop
+      const scrubEnd = heroStart + hero.offsetHeight - window.innerHeight
+      const inHeroAnimation = window.scrollY > heroStart + 12 && window.scrollY < scrubEnd
+
+      setNavState(inHeroAnimation ? 'immersive' : window.scrollY >= scrubEnd ? 'scrolled' : 'top')
+    }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
   }, [])
   return (
-    <header className={`topbar${scrolled ? ' scrolled' : ''}`}>
-      <img className="logo" src="/logo/wordmark-white.svg" alt="Kalinga Stone" />
-      <nav>
-        <a href="#collections">Collections</a>
-        <a href="#projects">Projects</a>
-        <a href="#experience">Experience</a>
-        <a href="#company">Company</a>
-        <a href="#contact">Contact</a>
-        <a className="btn-ruby" href="#contact">Book a Visit</a>
-      </nav>
-      <button className="btn-ruby nav-toggle" aria-label="Menu">Menu</button>
+    <header className={`topbar ${navState}`}>
+      <img className="logo" src="/logo/red.svg" alt="Kalinga Stone — Engineered Surfaces" />
+      <button className="nav-toggle" type="button" aria-label="Open menu">
+        <img src="/logo/hamburger.svg" alt="" />
+      </button>
     </header>
   )
 }
@@ -78,8 +85,7 @@ const MATERIALS = [
   { name: 'Quartz', desc: 'Engineered durability', bullet: true },
   { name: 'Marble', desc: 'Veined elegance', idx: '02' },
   { name: 'Terrazzo', desc: 'Characterful chips', idx: '03' },
-  { name: 'Elixir', desc: 'Translucent stone', idx: '04' },
-  { name: 'Custom Terrazzo', desc: 'Bespoke blends', idx: '05' },
+  { name: 'Procelian', desc: 'Translucent stone', idx: '04' },
 ]
 function Collections() {
   return (
@@ -104,7 +110,6 @@ function Collections() {
             </div>
           ))}
         </div>
-        <div className="hint">Hover a collection to preview · drag to explore all</div>
       </div>
     </section>
   )
@@ -112,9 +117,9 @@ function Collections() {
 
 /* --------------------------------------------------------------- TRENDING */
 const TRENDING = [
-  { name: 'Murano', tag: 'NEW', cat: 'Terrazzo · 2 finishes', img: '/img/terrazzo.jpg' },
-  { name: 'Miraggio Gold', tag: '', cat: 'Marble · 3 finishes', img: '/img/quartz.jpg' },
-  { name: 'Voila', tag: 'NEW', cat: 'Elixir · 3 finishes', img: '/img/quartz-wide.jpg' },
+  { name: 'Murano', tag: 'NEW', cat: 'Terrazzo · 2 finishes', img: '/img/trend-murano.jpg' },
+  { name: 'Miraggio Gold', tag: '', cat: 'Marble · 3 finishes', img: '/img/trend-miraggio.jpg' },
+  { name: 'Voila', tag: 'NEW', cat: 'Elixir · 3 finishes', img: '/img/trend-voila.jpg' },
 ]
 function Trending() {
   return (
@@ -141,16 +146,15 @@ function Trending() {
           ))}
         </div>
       </div>
-      <a className="btn-ruby-lg" href="#collections">Explore the Collections <span className="arrow">→</span></a>
     </section>
   )
 }
 
 /* ---------------------------------------------------------- BROWSE BY SPACE */
 const SPACES = [
-  { n: '01', t: 'Kitchen', img: '/img/quartz.jpg' },
-  { n: '02', t: 'Bathroom', img: '/img/tex-02.jpg' },
-  { n: '03', t: 'Living Room', img: '/img/terrazzo.jpg' },
+  { n: '01', t: 'Kitchen', img: '/img/space-2.jpg' },
+  { n: '02', t: 'Bathroom', img: '/img/space-3.jpg' },
+  { n: '03', t: 'Living Room', img: '/img/space-5.jpg' },
   { n: '04', t: 'Commercial', img: '/img/tex-01.jpg' },
   { n: '05', t: 'Hospitality', img: '/img/quartz-wide.jpg' },
 ]
@@ -292,7 +296,7 @@ function Visualizer() {
         <div className="ba-layer">
           <img
             className="ba-img"
-            src="/img/visualizer-after.jpg"
+            src="/img/visualizer-after-figma.jpg"
             alt={`Living room with ${VIS_MATERIALS[mat].name}`}
             style={{ filter: VIS_MATERIALS[mat].filter }}
             draggable="false"
@@ -303,7 +307,7 @@ function Visualizer() {
         <div className="ba-layer ba-before">
           <img
             className="ba-img"
-            src="/img/visualizer-before.jpg"
+            src="/img/visualizer-before-figma.jpg"
             alt="Living room before"
             draggable="false"
           />
@@ -401,6 +405,48 @@ function SelectedWork() {
   )
 }
 
+/* --------------------------------------------------------------- MAXGUARD */
+const MAXGUARD_SPECS = [
+  { i: '01', t: 'Lifetime Warranty', d: 'Every MaxGuard™ surface is covered for life, in writing.' },
+  { i: '02', t: 'Stain Resistance', d: 'A non-porous seal that resists wine, oil, coffee and everyday spills.' },
+  { i: '03', t: 'Scratch Resistance', d: 'Hardened finish engineered for daily use in kitchens and high-traffic spaces.' },
+  { i: '04', t: 'Heat Resistance', d: 'Dimensionally stable under thermal stress, without discolouration.' },
+]
+const MAXGUARD_CERTS = ['ISO 9001:2015', 'NSF/ANSI 51', 'GREENGUARD GOLD', 'EN 14330', 'CE MARKED']
+
+function MaxGuard() {
+  return (
+    <section className="maxguard" id="maxguard">
+      <div className="maxguard-copy">
+        <div className="maxguard-lead">
+          <div className="eyebrow">MAXGUARD™ TECHNOLOGY</div>
+          <h2>Engineered to outlast.</h2>
+          <p>A proprietary surface protection system sealed into every slab — so the surface you specify today performs the same way decades from now. Backed by a lifetime warranty.</p>
+        </div>
+        <div className="maxguard-specs">
+          {MAXGUARD_SPECS.map((spec) => (
+            <article className="maxguard-spec" key={spec.i}>
+              <span className="spec-index">SPEC / {spec.i}</span>
+              <i />
+              <h3>{spec.t}</h3>
+              <p>{spec.d}</p>
+            </article>
+          ))}
+        </div>
+        <div className="maxguard-certs">
+          <div className="eyebrow">INDEPENDENTLY CERTIFIED</div>
+          <div className="cert-chip-row">
+            {MAXGUARD_CERTS.map((cert) => <span key={cert}><i />{cert}</span>)}
+          </div>
+        </div>
+      </div>
+      <div className="maxguard-visual">
+        <img className="maxguard-badge" src="/img/maxguard-logo.jpg" alt="Powered by MaxGuard" />
+      </div>
+    </section>
+  )
+}
+
 /* ----------------------------------------------------------- MANUFACTURING */
 const STEPS = [
   { i: '01', n: 'Sourcing', d: 'Responsibly quarried raw material, graded by hand.' },
@@ -435,6 +481,44 @@ function Manufacturing() {
   )
 }
 
+/* ------------------------------------------------------ SILVASSA FACILITY */
+const FACILITY_ROWS = [
+  ['01', 'Scale of Production', 'Large-format capacity built to serve national and export demand.'],
+  ['02', 'Precision Engineering', 'Calibrated tolerances held consistently across every batch produced.'],
+  ['03', 'Technology & Automation', 'Automated lines and controlled processes at each production stage.'],
+  ['04', 'Quality Control', 'Inspection at every stage, from raw slab through to finished surface.'],
+  ['05', 'Made in India', 'Vertically integrated manufacturing, engineered and finished in India.'],
+  ['06', 'Global Standards', 'Produced to specifications accepted in markets worldwide.'],
+]
+
+function SilvassaFacility() {
+  return (
+    <section className="facility" id="facility">
+      <div className="facility-lead">
+        <div className="eyebrow">SILVASSA FACILITY</div>
+        <h2>Where precision meets scale.</h2>
+        <p>Our Silvassa facility is where raw material becomes engineered surface — an integrated plant combining large-format production capacity with the tolerances of precision manufacturing.</p>
+      </div>
+      <figure className="facility-image">
+        <img src="/img/factory.jpg" alt="The Silvassa production floor" />
+        <figcaption>The Silvassa production floor — Gujarat, India.</figcaption>
+      </figure>
+      <div className="facility-dossier">
+        <div className="facility-metric">
+          <strong>5,00,000+ sq.ft.</strong>
+          <div><span>INTEGRATED FACILITY</span><p>One of the largest integrated stone processing plants in India.</p></div>
+        </div>
+        {FACILITY_ROWS.map(([i, title, desc]) => (
+          <div className="facility-row" key={i}>
+            <div><span>{i}</span><strong>{title}</strong></div>
+            <p>{desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 /* ------------------------------------------------------------ FOR THE TRADE */
 const TRADE = [
   { t: 'Architects & Designers', d: 'Super-jumbo formats, BIM files, spec sheets and a design desk that speaks fluent architecture.', cta: 'Start specifying' },
@@ -457,6 +541,24 @@ function ForTheTrade() {
           </div>
         ))}
       </div>
+    </section>
+  )
+}
+
+/* ------------------------------------------------------- CUSTOM TERRAZZO */
+function CustomTerrazzo() {
+  return (
+    <section className="custom-terrazzo" id="custom-terrazzo">
+      <div className="custom-copy">
+        <div className="eyebrow">MAKE MY TERRAZZO</div>
+        <h2>Your chips. Your<br />base. Your floor.</h2>
+        <p>A bespoke terrazzo service — compose your own aggregate, base colour and scale, and we pour it into production.</p>
+        <div className="custom-actions">
+          <a className="btn-ruby-lg" href="#">Start Customizing</a>
+          <a className="link-arrow" href="#">View past options <span className="arrow">→</span></a>
+        </div>
+      </div>
+      <img src="/img/custom-terrazzo.jpg" alt="Bespoke terrazzo furniture and architectural forms" />
     </section>
   )
 }
@@ -496,9 +598,10 @@ function ExperienceCentres() {
 
 /* --------------------------------------------------------------- JOURNAL */
 const SIDE_ARTICLES = [
-  { cat: 'LOOKBOOK', t: 'Calacatta in the contemporary kitchen', img: '/img/quartz.jpg' },
-  { cat: 'HOMES WE LOVE', t: 'A Goa villa built around terrazzo', img: '/img/terrazzo.jpg' },
-  { cat: 'CRAFT', t: 'Inside the art of slab finishing', img: '/img/tex-01.jpg' },
+  { cat: 'LOOKBOOK', t: 'Calacatta in the contemporary kitchen', img: '/img/journal.jpg' },
+  { cat: 'HOMES WE LOVE', t: 'A Goa villa built around terrazzo', img: '/img/journal.jpg' },
+  { cat: 'CRAFT', t: 'Inside the art of slab finishing', img: '/img/journal.jpg' },
+  { cat: 'CRAFT', t: 'Inside the art of slab finishing', img: '/img/journal.jpg' },
 ]
 function Journal() {
   return (
@@ -521,12 +624,13 @@ function Journal() {
           </div>
         </div>
         <div className="side">
-          {SIDE_ARTICLES.map((a) => (
-            <div className="item" key={a.t}>
+          {SIDE_ARTICLES.map((a, i) => (
+            <div className="item" key={`${a.t}-${i}`}>
               <div className="thumb" style={{ backgroundImage: `url(${a.img})` }} />
               <div className="c">
                 <div className="eyebrow">{a.cat}</div>
                 <h4>{a.t}</h4>
+                <a href="#">Read article</a>
               </div>
             </div>
           ))}
@@ -634,9 +738,11 @@ export default function App() {
       <Visualizer />
       <WhyKalinga />
       <SelectedWork />
+      <MaxGuard />
       <Manufacturing />
+      <SilvassaFacility />
       <ForTheTrade />
-      <ExperienceCentres />
+      <CustomTerrazzo />
       <Journal />
       <Voices />
       <StartProject />
