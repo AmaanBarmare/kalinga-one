@@ -233,16 +233,18 @@ function Trending() {
 
 /* ---------------------------------------------------------- BROWSE BY SPACE */
 const SPACES = [
-  { n: '01', t: 'Kitchen', img: '/img/space-2.webp' },
-  { n: '02', t: 'Bathroom', img: '/img/space-3.webp' },
-  { n: '03', t: 'Living Room', img: '/img/space-5.webp' },
-  { n: '04', t: 'Commercial', img: '/img/tex-01.webp' },
-  { n: '05', t: 'Hospitality', img: '/img/quartz-wide.webp' },
+  { n: '01', t: 'Kitchen', img: '/img/space-2.webp', material: 'Calacatta Oro', materialImg: '/img/trend-miraggio.webp' },
+  { n: '02', t: 'Bathroom', img: '/img/space-3.webp', material: 'Murano', materialImg: '/img/trend-murano.webp' },
+  { n: '03', t: 'Living Room', img: '/img/space-5.webp', material: 'Voila', materialImg: '/img/trend-voila.webp' },
+  { n: '04', t: 'Commercial', img: '/img/tex-01.webp', material: 'Nero Marquina', materialImg: '/img/tex-02.webp' },
+  { n: '05', t: 'Hospitality', img: '/img/quartz-wide.webp', material: 'Custom Terrazzo', materialImg: '/img/custom-terrazzo.webp' },
 ]
 function BrowseBySpace() {
   const trackRef = useRef(null)
   const fillRef = useRef(null)
   const drag = useRef({ down: false, startX: 0, startScroll: 0, moved: false })
+  const [activeSpace, setActiveSpace] = useState(0)
+  const [expandedSpace, setExpandedSpace] = useState(null)
 
   const updateProgress = () => {
     const el = trackRef.current, fill = fillRef.current
@@ -252,6 +254,24 @@ function BrowseBySpace() {
     fill.style.left = `${p * 78}%`
   }
   useEffect(() => { updateProgress() }, [])
+  useEffect(() => {
+    const syncHoveredCard = (event) => {
+      if (event.pointerType === 'touch' || drag.current.down) return
+      const card = event.target instanceof Element ? event.target.closest('.space-card') : null
+      const index = card ? Number(card.dataset.spaceIndex) : null
+
+      setExpandedSpace(Number.isInteger(index) ? index : null)
+      if (Number.isInteger(index)) setActiveSpace(index)
+    }
+    const clearHoveredCard = () => setExpandedSpace(null)
+
+    window.addEventListener('pointermove', syncHoveredCard, { passive: true })
+    window.addEventListener('blur', clearHoveredCard)
+    return () => {
+      window.removeEventListener('pointermove', syncHoveredCard)
+      window.removeEventListener('blur', clearHoveredCard)
+    }
+  }, [])
 
   const onDown = (e) => {
     const el = trackRef.current
@@ -279,7 +299,7 @@ function BrowseBySpace() {
           <h2>Stone for every space</h2>
         </div>
         <div className="meta">
-          <span className="m">01 / 05</span>
+          <span className="m">{String(activeSpace + 1).padStart(2, '0')} / 05</span>
           <span>Drag to explore →</span>
         </div>
       </div>
@@ -293,13 +313,43 @@ function BrowseBySpace() {
         onMouseUp={onUp}
         onMouseLeave={onUp}
       >
-        {SPACES.map((s) => (
-          <div className="space-card" key={s.n} style={{ backgroundImage: `url(${s.img})` }}>
+        {SPACES.map((s, index) => (
+          <article
+            className={`space-card${expandedSpace === index ? ' is-active' : ''}`}
+            key={s.n}
+            data-space-index={index}
+            tabIndex={0}
+            aria-label={`${s.t} — ${s.material}`}
+            onPointerEnter={(event) => {
+              if (event.pointerType === 'touch') return
+              setExpandedSpace(index)
+              setActiveSpace(index)
+            }}
+            onFocus={() => {
+              setExpandedSpace(index)
+              setActiveSpace(index)
+            }}
+            onBlur={(event) => {
+              if (!(event.relatedTarget instanceof Node) || !event.currentTarget.contains(event.relatedTarget)) {
+                setExpandedSpace(null)
+              }
+            }}
+          >
+            <span className="space-image" style={{ backgroundImage: `url(${s.img})` }} aria-hidden="true" />
             <div className="cap">
               <div className="n">{s.n}</div>
               <div className="t">{s.t}</div>
             </div>
-          </div>
+            <a
+              className="space-material-card"
+              href="#collections"
+              aria-label={`View ${s.material} material`}
+              onMouseDown={(event) => event.stopPropagation()}
+            >
+              <span className="space-material-image" style={{ backgroundImage: `url(${s.materialImg})` }} aria-hidden="true" />
+              <span className="space-material-link">View Material <span aria-hidden="true">→</span></span>
+            </a>
+          </article>
         ))}
       </div>
     </section>
