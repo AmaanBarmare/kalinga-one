@@ -279,17 +279,34 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   white-space: nowrap;
 }
 .ticker .track {
-  display: inline-flex;
+  display: flex;
   gap: 0;
+  width: max-content;
+  flex: none;
   animation: marquee 42s linear infinite;
 }
-.ticker .track span {
+.ticker-group {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding-right: 32px;
+  flex: none;
+}
+.ticker-unit {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex: none;
+}
+.ticker-item,
+.ticker-separator {
   font-family: var(--font-display);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 2px;
-  padding-right: 0;
+  line-height: 1;
 }
+.ticker-separator { letter-spacing: 0; }
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -304,7 +321,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: #ded6cc url('/img/terrazzo.jpg') center/cover no-repeat;
+  background: #ded6cc url('/img/terrazzo.webp') center/cover no-repeat;
   position: relative;
 }
 .materiality::before {
@@ -367,7 +384,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .collections .visual {
   flex: 0 0 744px;
   max-width: 51%;
-  background: var(--surface-placeholder) url('/img/quartz.jpg') center/cover no-repeat;
+  background: var(--surface-placeholder) url('/img/quartz.webp') center/cover no-repeat;
   min-height: 1040px;
 }
 .collections .body {
@@ -619,7 +636,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
    WHY KALINGA (stats)
    ========================================================================= */
 .why {
-  background: #ddd0bd url('/img/tex-01.jpg') center/cover no-repeat;
+  background: #ddd0bd url('/img/tex-01.webp') center/cover no-repeat;
   padding: 120px var(--gutter);
   display: flex;
   flex-direction: column;
@@ -643,7 +660,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   height: 880px;
   position: relative;
   overflow: hidden;
-  background: var(--bg-ink-dark) url('/img/quartz.jpg') center/cover no-repeat;
+  background: var(--bg-ink-dark) url('/img/quartz.webp') center/cover no-repeat;
   color: #fff;
 }
 .work::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.1) 40%, rgba(0,0,0,.72) 100%); }
@@ -669,7 +686,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 .mfg .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
 .mfg .head h2 { font-family: var(--font-display); font-size: clamp(34px, 3.8vw, 50px); font-weight: 400; margin-top: 24px; }
-.mfg .film { height: 540px; border-radius: 2px; overflow: hidden; background: var(--bg-ink-dark) url('/img/terrazzo.jpg') center/cover no-repeat; position: relative; }
+.mfg .film { height: 540px; border-radius: 2px; overflow: hidden; background: var(--bg-ink-dark) url('/img/terrazzo.webp') center/cover no-repeat; position: relative; }
 .mfg .film .play { position: absolute; inset: 0; margin: auto; width: 78px; height: 78px; border-radius: 9999px; border: 1px solid rgba(255,255,255,.7); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; background: rgba(0,0,0,.15); backdrop-filter: blur(2px); }
 .steps { display: flex; gap: 40px; flex-wrap: wrap; }
 .step { flex: 1 1 200px; display: flex; flex-direction: column; gap: 24px; }
@@ -717,7 +734,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .city .name { font-family: var(--font-display); font-size: 24px; font-weight: 400; color: var(--ink-primary); }
 .city .addr { font-family: var(--font-display); font-size: 13px; color: var(--ink-muted); }
 .btn-ink { align-self: flex-start; background: var(--ink-primary); color: #fff; border-radius: 1px; padding: 17px 30px; font-family: var(--font-display); font-size: 14px; font-weight: 500; letter-spacing: .3px; }
-.centres .visual { flex: 0 0 719px; max-width: 50%; min-height: 1010px; background: var(--surface-placeholder) url('/img/terrazzo.jpg') center/cover no-repeat; border-radius: 2px; }
+.centres .visual { flex: 0 0 719px; max-width: 50%; min-height: 1010px; background: var(--surface-placeholder) url('/img/terrazzo.webp') center/cover no-repeat; border-radius: 2px; }
 
 /* =========================================================================
    JOURNAL
@@ -726,7 +743,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .journal .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
 .journal .head h2 { font-family: var(--font-display); font-size: clamp(32px, 3.4vw, 46px); font-weight: 400; color: var(--ink-primary); margin-top: 24px; }
 .journal .grid { display: grid; grid-template-columns: 1fr 440px; gap: 67px; align-items: start; }
-.feat .thumb { height: 480px; border-radius: 2px; background: var(--surface-placeholder) url('/img/quartz-wide.jpg') center/cover no-repeat; }
+.feat .thumb { height: 480px; border-radius: 2px; background: var(--surface-placeholder) url('/img/quartz-wide.webp') center/cover no-repeat; }
 .feat .txt { margin-top: 40px; display: flex; flex-direction: column; gap: 24px; max-width: 736px; }
 .feat h3 { font-family: var(--font-display); font-size: clamp(24px, 2.4vw, 30px); font-weight: 400; line-height: 1.24; color: var(--ink-primary); }
 .feat p { font-family: var(--font-display); font-size: 15px; line-height: 1.55; color: var(--ink-muted); }
@@ -762,7 +779,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .btn-white { background: #fff; color: var(--brand-ruby); border-radius: 1px; padding: 17px 30px; font-family: var(--font-display); font-size: 14px; font-weight: 500; letter-spacing: .3px; }
 .btn-outline { border: 1px solid #fff; border-radius: 1px; padding: 17px 30px; color: #fff; font-family: var(--font-display); font-size: 14px; font-weight: 500; letter-spacing: .3px; }
 .start .mail { font-family: var(--font-display); font-size: 14px; }
-.start .visual { flex: 0 0 736px; max-width: 50%; align-self: stretch; min-height: 762px; background: #fff url('/img/quartz.jpg') center/cover no-repeat; }
+.start .visual { flex: 0 0 736px; max-width: 50%; align-self: stretch; min-height: 762px; background: #fff url('/img/quartz.webp') center/cover no-repeat; }
 
 /* =========================================================================
    FOOTER
@@ -787,7 +804,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
    FIGMA V2 — revised composition and added sections
    ========================================================================= */
 .materiality {
-  background: #ded6cc url('/img/material.jpg') center/cover no-repeat;
+  background: #ded6cc url('/img/material.webp') center/cover no-repeat;
 }
 .materiality::before { display: none; }
 .materiality .inner { max-width: 1227px; }
@@ -798,7 +815,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .collections .visual {
   flex-basis: 744px;
   min-height: 954px;
-  background-image: url('/img/collections.jpg');
+  background-image: url('/img/collections.webp');
 }
 .collections .body { justify-content: center; padding-top: 92px; padding-bottom: 92px; }
 
@@ -811,11 +828,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .why {
   min-height: 496px;
   justify-content: center;
-  background-image: url('/img/why.jpg');
+  background-image: url('/img/why.webp');
 }
 .why::before { display: none; }
-.work { background-image: url('/img/project.jpg'); }
-.mfg .film { background-image: url('/img/manufacturing.jpg'); }
+.work { background-image: url('/img/project.webp'); }
+.mfg .film { background-image: url('/img/manufacturing.webp'); }
 
 .maxguard {
   min-height: 1044px;
@@ -872,7 +889,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   flex: 1 1 655px;
   min-height: 1044px;
   position: relative;
-  background: #231a16 url('/img/maxguard.jpg') 52% center/auto 100% no-repeat;
+  background: #231a16 url('/img/maxguard.webp') 52% center/auto 100% no-repeat;
 }
 .maxguard-badge {
   position: absolute;
@@ -941,13 +958,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .journal { background: var(--bg-off-white); min-height: 1110px; }
-.feat .thumb { background-image: url('/img/journal.jpg'); background-position: center 48%; }
+.feat .thumb { background-image: url('/img/journal.webp'); background-position: center 48%; }
 .side .item .thumb { background-position: center 48%; }
 .side .item a { font-family: var(--font-display); font-size: 13px; font-weight: 500; }
 
 .voices { background: var(--bg-linen); color: var(--ink-primary); min-height: 558px; justify-content: center; }
 .quote .by .who { color: var(--accent-tan); }
-.start .visual { background-image: url('/img/start-project.jpg'); }
+.start .visual { background-image: url('/img/start-project.webp'); }
 
 /* =========================================================================
    RESPONSIVE

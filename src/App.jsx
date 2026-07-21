@@ -39,12 +39,19 @@ const TICKER_ITEMS = [
   '20,000+ KITCHENS CRAFTED', 'ITALIAN TECHNOLOGY', '5000+ GLOBAL CLIENTS',
 ]
 function Ticker() {
-  const line = TICKER_ITEMS.join('      ·      ') + '      ·      '
   return (
     <div className="ticker">
       <div className="track">
-        <span>{line}</span>
-        <span>{line}</span>
+        {[0, 1].map((copy) => (
+          <div className="ticker-group" key={copy} aria-hidden={copy === 1 ? 'true' : undefined}>
+            {TICKER_ITEMS.map((item) => (
+              <span className="ticker-unit" key={item}>
+                <span className="ticker-item">{item}</span>
+                <span className="ticker-separator" aria-hidden="true">·</span>
+              </span>
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -117,9 +124,9 @@ function Collections() {
 
 /* --------------------------------------------------------------- TRENDING */
 const TRENDING = [
-  { name: 'Murano', tag: 'NEW', cat: 'Terrazzo · 2 finishes', img: '/img/trend-murano.jpg' },
-  { name: 'Miraggio Gold', tag: '', cat: 'Marble · 3 finishes', img: '/img/trend-miraggio.jpg' },
-  { name: 'Voila', tag: 'NEW', cat: 'Elixir · 3 finishes', img: '/img/trend-voila.jpg' },
+  { name: 'Murano', tag: 'NEW', cat: 'Terrazzo · 2 finishes', img: '/img/trend-murano.webp' },
+  { name: 'Miraggio Gold', tag: '', cat: 'Marble · 3 finishes', img: '/img/trend-miraggio.webp' },
+  { name: 'Voila', tag: 'NEW', cat: 'Elixir · 3 finishes', img: '/img/trend-voila.webp' },
 ]
 function Trending() {
   return (
@@ -152,11 +159,11 @@ function Trending() {
 
 /* ---------------------------------------------------------- BROWSE BY SPACE */
 const SPACES = [
-  { n: '01', t: 'Kitchen', img: '/img/space-2.jpg' },
-  { n: '02', t: 'Bathroom', img: '/img/space-3.jpg' },
-  { n: '03', t: 'Living Room', img: '/img/space-5.jpg' },
-  { n: '04', t: 'Commercial', img: '/img/tex-01.jpg' },
-  { n: '05', t: 'Hospitality', img: '/img/quartz-wide.jpg' },
+  { n: '01', t: 'Kitchen', img: '/img/space-2.webp' },
+  { n: '02', t: 'Bathroom', img: '/img/space-3.webp' },
+  { n: '03', t: 'Living Room', img: '/img/space-5.webp' },
+  { n: '04', t: 'Commercial', img: '/img/tex-01.webp' },
+  { n: '05', t: 'Hospitality', img: '/img/quartz-wide.webp' },
 ]
 function BrowseBySpace() {
   const trackRef = useRef(null)
@@ -296,7 +303,7 @@ function Visualizer() {
         <div className="ba-layer">
           <img
             className="ba-img"
-            src="/img/visualizer-after-figma.jpg"
+            src="/img/visualizer-after-figma.webp"
             alt={`Living room with ${VIS_MATERIALS[mat].name}`}
             style={{ filter: VIS_MATERIALS[mat].filter }}
             draggable="false"
@@ -307,7 +314,7 @@ function Visualizer() {
         <div className="ba-layer ba-before">
           <img
             className="ba-img"
-            src="/img/visualizer-before-figma.jpg"
+            src="/img/visualizer-before-figma.webp"
             alt="Living room before"
             draggable="false"
           />
@@ -441,7 +448,7 @@ function MaxGuard() {
         </div>
       </div>
       <div className="maxguard-visual">
-        <img className="maxguard-badge" src="/img/maxguard-logo.jpg" alt="Powered by MaxGuard" />
+        <img className="maxguard-badge" src="/img/maxguard-logo.webp" alt="Powered by MaxGuard" />
       </div>
     </section>
   )
@@ -500,7 +507,7 @@ function SilvassaFacility() {
         <p>Our Silvassa facility is where raw material becomes engineered surface — an integrated plant combining large-format production capacity with the tolerances of precision manufacturing.</p>
       </div>
       <figure className="facility-image">
-        <img src="/img/factory.jpg" alt="The Silvassa production floor" />
+        <img src="/img/factory.webp" alt="The Silvassa production floor" />
         <figcaption>The Silvassa production floor — Gujarat, India.</figcaption>
       </figure>
       <div className="facility-dossier">
@@ -558,7 +565,7 @@ function CustomTerrazzo() {
           <a className="link-arrow" href="#">View past options <span className="arrow">→</span></a>
         </div>
       </div>
-      <img src="/img/custom-terrazzo.jpg" alt="Bespoke terrazzo furniture and architectural forms" />
+      <img src="/img/custom-terrazzo.webp" alt="Bespoke terrazzo furniture and architectural forms" />
     </section>
   )
 }
@@ -598,10 +605,10 @@ function ExperienceCentres() {
 
 /* --------------------------------------------------------------- JOURNAL */
 const SIDE_ARTICLES = [
-  { cat: 'LOOKBOOK', t: 'Calacatta in the contemporary kitchen', img: '/img/journal.jpg' },
-  { cat: 'HOMES WE LOVE', t: 'A Goa villa built around terrazzo', img: '/img/journal.jpg' },
-  { cat: 'CRAFT', t: 'Inside the art of slab finishing', img: '/img/journal.jpg' },
-  { cat: 'CRAFT', t: 'Inside the art of slab finishing', img: '/img/journal.jpg' },
+  { cat: 'LOOKBOOK', t: 'Calacatta in the contemporary kitchen', img: '/img/journal.webp' },
+  { cat: 'HOMES WE LOVE', t: 'A Goa villa built around terrazzo', img: '/img/journal.webp' },
+  { cat: 'CRAFT', t: 'Inside the art of slab finishing', img: '/img/journal.webp' },
+  { cat: 'CRAFT', t: 'Inside the art of slab finishing', img: '/img/journal.webp' },
 ]
 function Journal() {
   return (

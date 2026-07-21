@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 const FRAME_COUNT = 240
 const pad = (i) => ('000' + i).slice(-3)
-const frameSrc = (i) => `/frames/f_${pad(i + 1)}.jpg`
+const frameSrc = (i) => `/frames/f_${pad(i + 1)}.webp`
 
 export default function Hero() {
   const heroRef = useRef(null)
