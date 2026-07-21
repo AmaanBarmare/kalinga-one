@@ -800,6 +800,48 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .footer .legal .links { display: flex; gap: 26px; }
 .footer .legal .links span:hover { color: rgba(255,255,255,.85); cursor: pointer; }
 
+/* Shared depth and hover treatment for filled/outlined CTA controls. */
+.btn-ruby,
+.btn-ruby-lg,
+.btn-ink,
+.btn-white,
+.btn-outline,
+.footer .sub button {
+  box-shadow: 0 4px 12px rgba(20, 16, 14, .14);
+  transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease;
+}
+.btn-ruby:hover,
+.btn-ruby-lg:hover,
+.btn-ink:hover,
+.btn-white:hover,
+.btn-outline:hover,
+.footer .sub button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(20, 16, 14, .22);
+}
+.btn-ink:hover { background: #2a2421; }
+.btn-white:hover,
+.footer .sub button:hover { background: #f5f1eb; }
+.btn-outline:hover { background: rgba(255,255,255,.1); }
+.btn-ruby:active,
+.btn-ruby-lg:active,
+.btn-ink:active,
+.btn-white:active,
+.btn-outline:active,
+.footer .sub button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 7px rgba(20, 16, 14, .16);
+}
+.btn-ruby:focus-visible,
+.btn-ruby-lg:focus-visible,
+.btn-ink:focus-visible,
+.btn-white:focus-visible,
+.btn-outline:focus-visible,
+.footer .sub button:focus-visible {
+  outline: 2px solid var(--accent-tan);
+  outline-offset: 3px;
+}
+
 /* =========================================================================
    FIGMA V2 — revised composition and added sections
    ========================================================================= */
