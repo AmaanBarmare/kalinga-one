@@ -233,8 +233,8 @@ function Trending() {
 
 /* ---------------------------------------------------------- BROWSE BY SPACE */
 const SPACES = [
-  { n: '01', t: 'Kitchen', img: '/img/space-2.webp', material: 'Calacatta Oro', materialImg: '/img/trend-miraggio.webp' },
-  { n: '02', t: 'Bathroom', img: '/img/space-3.webp', material: 'Murano', materialImg: '/img/trend-murano.webp' },
+  { n: '01', t: 'Kitchen', img: '/img/space-2.webp', imageClass: 'is-crop-tight', material: 'Calacatta Oro', materialImg: '/img/trend-miraggio.webp' },
+  { n: '02', t: 'Lobby', img: '/img/lobby-hotel.webp', material: 'Murano', materialImg: '/img/trend-murano.webp' },
   { n: '03', t: 'Living Room', img: '/img/space-5.webp', material: 'Voila', materialImg: '/img/trend-voila.webp' },
   { n: '04', t: 'Commercial', img: '/img/tex-01.webp', material: 'Nero Marquina', materialImg: '/img/tex-02.webp' },
   { n: '05', t: 'Hospitality', img: '/img/quartz-wide.webp', material: 'Custom Terrazzo', materialImg: '/img/custom-terrazzo.webp' },
@@ -335,7 +335,7 @@ function BrowseBySpace() {
               }
             }}
           >
-            <span className="space-image" style={{ backgroundImage: `url(${s.img})` }} aria-hidden="true" />
+            <span className={`space-image${s.imageClass ? ` ${s.imageClass}` : ''}`} style={{ backgroundImage: `url(${s.img})` }} aria-hidden="true" />
             <div className="cap">
               <div className="n">{s.n}</div>
               <div className="t">{s.t}</div>

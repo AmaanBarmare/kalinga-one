@@ -587,14 +587,20 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     box-shadow .42s cubic-bezier(.22, 1, .36, 1);
 }
 .space-card .space-image {
+  --space-image-scale: 1.001;
+  --space-image-active-scale: 1.035;
   position: absolute;
   inset: 0;
   z-index: 0;
   display: block;
   background-position: center;
   background-size: cover;
-  transform: scale(1.001);
+  transform: scale(var(--space-image-scale));
   transition: transform .55s cubic-bezier(.22, 1, .36, 1);
+}
+.space-card .space-image.is-crop-tight {
+  --space-image-scale: 1.035;
+  --space-image-active-scale: 1.065;
 }
 .space-card::after {
   content: '';
@@ -665,7 +671,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   height: 650px;
   box-shadow: 0 18px 34px rgba(20, 16, 14, .18);
 }
-.space-track:not(.dragging) .space-card.is-active .space-image { transform: scale(1.035); }
+.space-track:not(.dragging) .space-card.is-active .space-image { transform: scale(var(--space-image-active-scale)); }
 .space-track:not(.dragging) .space-card.is-active .cap { bottom: calc(100% - 92px); }
 .space-track:not(.dragging) .space-card.is-active .space-material-card {
   opacity: 1;
@@ -683,7 +689,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   }
   .space-track:not(.dragging) .space-card:hover .space-image,
   .space-track:not(.dragging) .space-card:focus-within .space-image {
-    transform: scale(1.035);
+    transform: scale(var(--space-image-active-scale));
   }
   .space-track:not(.dragging) .space-card:hover .cap,
   .space-track:not(.dragging) .space-card:focus-within .cap {
@@ -709,7 +715,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .space-track:not(.dragging) .space-card:hover .space-image,
   .space-track:not(.dragging) .space-card:focus-within .space-image,
   .space-track:not(.dragging) .space-card.is-active .space-image {
-    transform: none;
+    transform: scale(var(--space-image-scale));
   }
 }
 
