@@ -233,11 +233,11 @@ function Trending() {
 
 /* ---------------------------------------------------------- BROWSE BY SPACE */
 const SPACES = [
-  { n: '01', t: 'Kitchen', img: '/img/space-2.webp', imageClass: 'is-crop-tight', material: 'Calacatta Oro', materialImg: '/img/trend-miraggio.webp' },
-  { n: '02', t: 'Lobby', img: '/img/lobby-hotel.webp', material: 'Murano', materialImg: '/img/trend-murano.webp' },
-  { n: '03', t: 'Living Room', img: '/img/space-5.webp', material: 'Voila', materialImg: '/img/trend-voila.webp' },
-  { n: '04', t: 'Commercial', img: '/img/tex-01.webp', material: 'Nero Marquina', materialImg: '/img/tex-02.webp' },
-  { n: '05', t: 'Hospitality', img: '/img/quartz-wide.webp', material: 'Custom Terrazzo', materialImg: '/img/custom-terrazzo.webp' },
+  { n: '01', t: 'Kitchen', img: '/img/space-2.webp', imageClass: 'is-crop-tight', material: 'Bianco Terrazzo', materialCrop: { backgroundSize: '600% auto', backgroundPosition: '25% 67%' } },
+  { n: '02', t: 'Lobby', img: '/img/lobby-hotel.webp', material: 'Calacatta Oro', materialCrop: { backgroundSize: '320% auto', backgroundPosition: '90% 28%' } },
+  { n: '03', t: 'Living Room', img: '/img/space-5.webp', material: 'Nero Stone', materialCrop: { backgroundSize: '300% auto', backgroundPosition: '55% 24%' } },
+  { n: '04', t: 'Commercial', img: '/img/tex-01.webp', material: 'Nero Marquina', materialCrop: { backgroundSize: '500% auto', backgroundPosition: '50% 65%' } },
+  { n: '05', t: 'Hospitality', img: '/img/quartz-wide.webp', material: 'Calacatta Quartz', materialCrop: { backgroundSize: '500% auto', backgroundPosition: '58% 72%' } },
 ]
 function BrowseBySpace() {
   const trackRef = useRef(null)
@@ -346,7 +346,11 @@ function BrowseBySpace() {
               aria-label={`View ${s.material} material`}
               onMouseDown={(event) => event.stopPropagation()}
             >
-              <span className="space-material-image" style={{ backgroundImage: `url(${s.materialImg})` }} aria-hidden="true" />
+              <span
+                className="space-material-image"
+                style={{ backgroundImage: `url(${s.img})`, ...s.materialCrop }}
+                aria-hidden="true"
+              />
               <span className="space-material-link">View Material <span aria-hidden="true">→</span></span>
             </a>
           </article>
